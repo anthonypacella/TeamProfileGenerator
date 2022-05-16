@@ -47,7 +47,6 @@ function managerQuestions() {
     ])
     .then(function managerAnswerHandler(data) {
         let managerObj = new Manager(data.name, data.id, data.email, data.officeNumber);
-        console.log(managerObj);
         moreTeamMembers(managerObj, {}, {});
     })
 };
@@ -164,7 +163,6 @@ function teamMemberQuestions(employeeRole, managerObject, engineerObject, intern
 init();
 
 function drawTeamProfile(managerObj, engineerObj, internObj) {
-    console.log(internObj);
     let topHTML =  `<!DOCTYPE html>
     <html lang="en">
     <head>
@@ -240,7 +238,6 @@ let bottomHTML = `</div>
 
 let fullHTML = topHTML + managerHTML + engineerHTML + internHTML + bottomHTML;
 
-console.log(managerObj);
 fs.writeFile('./index.html', fullHTML, (err) => err ? console.error(err) : console.log('index.html created'));
 
 }
