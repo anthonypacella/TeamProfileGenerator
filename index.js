@@ -26,34 +26,36 @@ function managerQuestions() {
         {
             type: 'input',
             message: 'What is the team managers\'s name?',
-            name: 'managerName'
+            name: 'name'
         },
 
         {
             type: 'input',
             message: `What is the managers\'s ID number?`,
-            name: 'managerId'
+            name: 'id'
         },
         {
             type: 'input',
             message: `What is the managers\'s email address?`,
-            name: 'managerEmail'
+            name: 'email'
         },
         {
             type: 'input',
             message: `What is the managers\'s office number?`,
-            name: 'managerOfficeNumber'
+            name: 'officeNumber'
         },
     ])
     .then(function managerAnswerHandler(data) {
-        let managerObj = new Manager(data.managerName, data.managerId, data.managerEmail, data.managerOfficeNumber);
+        let managerObj = new Manager(data.name, data.id, data.email, data.officeNumber);
         console.log(managerObj);
-        moreTeamMembers();
+        moreTeamMembers(managerObj, {}, {});
     })
 };
 
-function moreTeamMembers() {
-    managerObj = managerObj;
+function moreTeamMembers(managerObject, engineerObject, internObject) {
+    managerObj = managerObject;
+    engineerObj = engineerObject;
+    internObj = internObject;
     inquirer
     .prompt([
         {
@@ -65,16 +67,19 @@ function moreTeamMembers() {
     ])
     .then(function teamMemberQuestionHandler(data) {
         if (data.addEmployees === 'Yes') {
-            findOutRole();
+            findOutRole(managerObj, engineerObj, internObj);
         }
         else {
-            drawTeamProfile();
+            drawTeamProfile(managerObj, engineerObj, internObj);
             // exit();
         }
     })
 };
 
-function findOutRole() {
+function findOutRole(managerObject, engineerObject, internObject) {
+    managerObj = managerObject;
+    engineerObj = engineerObject;
+    internObj = internObject;
     inquirer
             .prompt([
                 {
@@ -86,11 +91,14 @@ function findOutRole() {
             ])
             .then(function findOutRoleHandler(data) {
                 let employeeRole = data.employeeRole;
-                teamMemberQuestions(employeeRole);
+                teamMemberQuestions(employeeRole, managerObj, engineerObj, internObj);
             })
 };
 
-function teamMemberQuestions(employeeRole) {
+function teamMemberQuestions(employeeRole, managerObject, engineerObject, internObject) {
+    managerObj = managerObject;
+    engineerObj = engineerObject;
+    internObj = internObject;
     if (employeeRole === "Engineer") {
         inquirer
         .prompt([
@@ -118,6 +126,7 @@ function teamMemberQuestions(employeeRole) {
         .then(function teamMemberQuestionsHandler(data) {
             let newEngineer = new Engineer(data.engineerName, data.engineerId, data.engineerEmail, data.engineerGithub);
             engineerList.push(newEngineer);
+            moreTeamMembers(managerObj, engineerList, internObj);
         })
     }
     else if (employeeRole === "Intern") {
@@ -145,15 +154,17 @@ function teamMemberQuestions(employeeRole) {
             }
         ])
         .then(function teamMemberQuestionsHandler(data) {
-            let newIntern = new Intern(data.internName, data.internId, data.internEmail, data.internGithub);
+            let newIntern = new Intern(data.internName, data.internId, data.internEmail, data.internSchool);
             internList.push(newIntern);
+            moreTeamMembers(managerObj, engineerList, internList);
         })
     }
 };
 
 init();
 
-function drawTeamProfile() {
+function drawTeamProfile(managerObj, engineerObj, internObj) {
+    console.log(internObj);
     let topHTML =  `<!DOCTYPE html>
     <html lang="en">
     <head>
@@ -176,45 +187,45 @@ function drawTeamProfile() {
         <div class = "container-fluid">
             <div class = "row" style = 'padding: 10px; margin:3px;'>`;
 
-        managerHTML = `<div class = "card" style = 'width: 18rem;'>
+        managerHTML = `<div class = "card" style = 'width: 25rem;'>
             <div class = 'card-body'>
-                <h5 class = 'card-title'>${Manager.name}</h5>
+                <h5 class = 'card-title'>${managerObj.name}</h5>
                 <h6 class = 'card-subtitle mb-2 text-muted'>Manager</h6>
                 <ul class = 'list-group list-group-flush'>
-                    <li class = 'list-group-item'>Employee ID: ${Manager.id}</li>
-                    <li class = 'list-group-item'>Email Address: <a href="mailto:${Manager.email}">emailaddress</a></li>
-                    <li class = 'list-group-item'>Office Number: ${Manager.officeNumber}</li>
+                    <li class = 'list-group-item'>Employee ID: ${managerObj.id}</li>
+                    <li class = 'list-group-item'>Email Address: <a href="mailto:${managerObj.email}">${managerObj.email}</a></li>
+                    <li class = 'list-group-item'>Office Number: ${managerObj.officeNumber}</li>
                 </ul> 
             </div>
         </div>`
         
     
 
-    engineerList.forEach((engineer) => {
+    engineerList.forEach(engineerObj => {
 
-            engineerHTML = engineerHTML + `<div class = "card" style = 'width: 18rem;'>
+            engineerHTML = engineerHTML + `<div class = "card" style = 'width: 25rem;'>
             <div class = 'card-body'>
-                <h5 class = 'card-title'>${engineer.employeeName}</h5>
-                <h6 class = 'card-subtitle mb-2 text-muted'>Manager</h6>
+                <h5 class = 'card-title'>${engineerObj.name}</h5>
+                <h6 class = 'card-subtitle mb-2 text-muted'>Engineer</h6>
                 <ul class = 'list-group list-group-flush'>
-                    <li class = 'list-group-item'>Employee ID: ${engineer.employeeName.employeeId}</li>
-                    <li class = 'list-group-item'>Email Address: <a href="mailto:${engineer.employeeName.employeeEmail}">emailaddress</a></li>
-                    <li class = 'list-group-item'>Github Username: ${engineer.employeeName.engineerGithub}</li>
+                    <li class = 'list-group-item'>Employee ID: ${engineerObj.id}</li>
+                    <li class = 'list-group-item'>Email Address: <a href="mailto:${engineerObj.email}">${engineerObj.email}</a></li>
+                    <li class = 'list-group-item'>Github: <a href="https://www.github.com/${engineerObj.github}">www.github.com/${engineerObj.github}</a></li>
                 </ul> 
             </div>
         </div>`
     });
 
-    internList.forEach((intern) => {
+    internList.forEach(internObj => {
 
-        internHTML = internHTML + `<div class = "card" style = 'width: 18rem;'>
+        internHTML = internHTML + `<div class = "card" style = 'width: 25rem;'>
         <div class = 'card-body'>
-            <h5 class = 'card-title'>${intern.employeeName}</h5>
-            <h6 class = 'card-subtitle mb-2 text-muted'>Manager</h6>
+            <h5 class = 'card-title'>${internObj.name}</h5>
+            <h6 class = 'card-subtitle mb-2 text-muted'>Intern</h6>
             <ul class = 'list-group list-group-flush'>
-                <li class = 'list-group-item'>Employee ID: ${intern.employeeName.employeeId}</li>
-                <li class = 'list-group-item'>Email Address: <a href="mailto:${intern.employeeName.employeeEmail}">emailaddress</a></li>
-                <li class = 'list-group-item'>University: ${intern.employeeName.internSchool}</li>
+                <li class = 'list-group-item'>Employee ID: ${internObj.id}</li>
+                <li class = 'list-group-item'>Email Address: <a href="mailto:${internObj.email}">${internObj.email}</a></li>
+                <li class = 'list-group-item'>University: ${internObj.school}</li>
             </ul> 
         </div>
     </div>`
