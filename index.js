@@ -1,7 +1,6 @@
 //dependencies
 const fs = require('fs');
 const inquirer = require('inquirer');
-const { exit } = require('process');
 
 //class imports
 const Employee = require('./lib/Employee');
