@@ -208,7 +208,7 @@ function drawTeamProfile(managerObj, engineerObj, internObj) {
                 <ul class = 'list-group list-group-flush'>
                     <li class = 'list-group-item'>Employee ID: ${engineerObj.id}</li>
                     <li class = 'list-group-item'>Email Address: <a href="mailto:${engineerObj.email}">${engineerObj.email}</a></li>
-                    <li class = 'list-group-item'>Github: <a href="https://www.github.com/${engineerObj.github}">www.github.com/${engineerObj.github}</a></li>
+                    <li class = 'list-group-item'>Github: <a href="https://www.github.com/${engineerObj.github}" target = "_blank">www.github.com/${engineerObj.github}</a></li>
                 </ul> 
             </div>
         </div>`
